@@ -17,6 +17,7 @@ import random
 from random import randint
 from termcolor import colored
 from sklearn import preprocessing
+import random
 
 
 DeviceSafeMovement = 500
@@ -265,96 +266,74 @@ class C030Class():
 
 	def RiskAnalysis(self):
 		if(self.RSRQ[0]-self.RSRQ[1]):
-			self.RSRQ_Risk = (abs(self.RSRQ[0]-self.RSRQ[1])*5 ) / max(abs(self.RSRQ[0]), abs(self.RSRQ[1]))  
+			self.RSRQ_Risk = (abs(self.RSRQ[0]-self.RSRQ[1])*5.4 ) / max(abs(self.RSRQ[0]), abs(self.RSRQ[1]))  
+		#if(self.BatVol[0]-self.BatVol[1]):
+		#	self.BatVol_Risk = (abs(self.BatVol[0]-self.BatVol[1])*5 ) / max(abs(self.BatVol[0]), abs(self.BatVol[1]))  
+		#if(self.BatChipTemp[0]-self.BatChipTemp[1]):
+		#	self.BatChipTemp_Risk = (abs(self.BatChipTemp[0]-self.BatChipTemp[1])*5 )/ max(abs(self.BatChipTemp[0]),abs(self.BatChipTemp[1])) 
+		#if(self.BatAmp[0]-self.BatAmp[1]):
+		#	self.BatAmp_Risk = (abs(self.BatAmp[0]-self.BatAmp[1])*5 ) / max(abs(self.BatAmp[0]), abs(self.BatAmp[1])) 
+		#if(self.BatRemCap[0]-self.BatRemCap[1]):
+		#	self.BatRemCap_Risk = (abs(self.BatRemCap[0]-self.BatRemCap[1])*5 ) / max(abs(self.BatRemCap[0]),  abs(self.BatRemCap[1]))   
+		#if(self.BatRemPer[0]-self.BatRemPer[1]):
+		#	self.BatRemPer_Risk = (abs(self.BatRemPer[0]-self.BatRemPer[1])*5 ) / max(abs(self.BatRemPer[0]),  abs(self.BatRemPer[1]))   
+		#if(self.CoreTemp[0]-self.CoreTemp[1]):
+		#	self.CoreTemp_Risk = (abs(self.CoreTemp[0]-self.CoreTemp[1])*5 ) / max(abs(self.CoreTemp[0]),   abs(self.CoreTemp[1])) 
+		#if(self.EnvTemp[0]-self.EnvTemp[1]):
+		#	self.EnvTemp_Risk = (abs(self.EnvTemp[0]-self.EnvTemp[1])*5 ) / max(abs(self.EnvTemp[0]),    abs(self.EnvTemp[1]))   
+		#if(self.HeapStatus[0]-self.HeapStatus[1]):
+		#	self.HeapStatus_Risk = (abs(self.HeapStatus[0]-self.HeapStatus[1])*5 ) / max(abs(self.HeapStatus[0]), abs(self.HeapStatus[1]))   
 
+		#if(abs(self.IMEI[0]-self.IMEI[1])):                              self.IMEI_Risk = 4.511                                                                  
+		#if(abs(self.IMSI[0]-self.IMSI[1])):                              self.IMSI_Risk = 4.122                                                                 
+		#if(abs(self.Wakeup[0]-self.Wakeup[1]) != 1):                     self.Wakeup_Risk = 4.664                                                       
+		#if(abs(self.WDT[0]-self.WDT[1])):                                self.WDT_Risk = 3.881                                                                     	
+		#if(abs(self.CellIdChangeCount[0]-self.CellIdChangeCount[1])>=1): self.CellIdChangeCount_Risk = 0                        
+		#if(abs(self.Jam[0]-self.Jam[1])):                                self.Jam_Risk = 5                                                                     
+		#if(abs(self.SleepCont[0]-self.SleepCont[1])):                    self.SleepCont_Risk = 5                                                   
 
-		if(self.BatVol[0]-self.BatVol[1]):
-			self.BatVol_Risk = (abs(self.BatVol[0]-self.BatVol[1])*5 ) / max(abs(self.BatVol[0]), abs(self.BatVol[1]))  
+		#movement = gpxpy.geo.haversine_distance(self.Lat[1], self.Lon[1], self.Lat[0], self.Lon[0])                           
+		#if(movement):
+		#	self.lat_Risk =  ( abs(movement-DeviceSafeMovement)*5 )/max(DeviceSafeMovement,movement)
+		#	self.lon_Risk =  self.lat_Risk
 
+		#print self.TX[0]
+		#print self.TX[1]
+		if( abs(self.TX[0]-self.TX[1])> 900 ):                    self.SleepCont_Risk = 4.153
+		if( abs(self.RX[0]-self.RX[1])> 900 ):                    self.SleepCont_Risk = 4.042
 
-		if(self.BatChipTemp[0]-self.BatChipTemp[1]):
-			self.BatChipTemp_Risk = (abs(self.BatChipTemp[0]-self.BatChipTemp[1])*5 )/ max(abs(self.BatChipTemp[0]),abs(self.BatChipTemp[1])) 
+		#RXTimeHistory = (np.delete(np.array(self.TIME_ready_RX), [0])).reshape(len(np.array(self.TIME_ready_RX))-1, 1) 
+		#RXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(RXTimeHistory , np.delete(self.RX_ready,[0])) 
+		#self.RX_prediction.append(RXModel.predict(self.TIME_ready_RX[0]))
+		#RX_Delta = (abs((self.RX_ready[0] - self.RX_prediction[0][0])/(self.RX_ready[0])))*100
+		#self.RX_Risk = RX_Delta/25
 
+		#TXTimeHistory = (np.delete(np.array(self.TIME_ready_TX), [0])).reshape(len(np.array(self.TIME_ready_TX))-1, 1) 
+		#TXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(TXTimeHistory , np.delete(self.TX_ready,[0])) 
+		#self.TX_prediction.append(TXModel.predict(self.TIME_ready_TX[0]))
+		#TX_Delta = (abs((self.TX_ready[0] - self.TX_prediction[0][0])/(self.TX_ready[0])))*100
+		#self.TX_Risk = TX_Delta/25
 
-		if(self.BatAmp[0]-self.BatAmp[1]):
-			self.BatAmp_Risk = (abs(self.BatAmp[0]-self.BatAmp[1])*5 ) / max(abs(self.BatAmp[0]), abs(self.BatAmp[1])) 
-
-
-		if(self.BatRemCap[0]-self.BatRemCap[1]):
-			self.BatRemCap_Risk = (abs(self.BatRemCap[0]-self.BatRemCap[1])*5 ) / max(abs(self.BatRemCap[0]),  abs(self.BatRemCap[1]))   
-
-
-		if(self.BatRemPer[0]-self.BatRemPer[1]):
-			self.BatRemPer_Risk = (abs(self.BatRemPer[0]-self.BatRemPer[1])*5 ) / max(abs(self.BatRemPer[0]),  abs(self.BatRemPer[1]))   
-
-
-		if(self.CoreTemp[0]-self.CoreTemp[1]):
-			self.CoreTemp_Risk = (abs(self.CoreTemp[0]-self.CoreTemp[1])*5 ) / max(abs(self.CoreTemp[0]),   abs(self.CoreTemp[1])) 
-
-
-		if(self.EnvTemp[0]-self.EnvTemp[1]):
-			self.EnvTemp_Risk = (abs(self.EnvTemp[0]-self.EnvTemp[1])*5 ) / max(abs(self.EnvTemp[0]),    abs(self.EnvTemp[1]))   
-
-
-		if(self.HeapStatus[0]-self.HeapStatus[1]):
-			self.HeapStatus_Risk = (abs(self.HeapStatus[0]-self.HeapStatus[1])*5 ) / max(abs(self.HeapStatus[0]), abs(self.HeapStatus[1]))   
-
-
-		if(abs(self.IMEI[0]-self.IMEI[1])):                              self.IMEI_Risk = 5                                                                  
-		if(abs(self.IMSI[0]-self.IMSI[1])):                              self.IMSI_Risk = 5                                                                 
-		if(abs(self.Wakeup[0]-self.Wakeup[1]) != 1):                     self.Wakeup_Risk = 5                                                       
-		if(abs(self.WDT[0]-self.WDT[1])):                                self.WDT_Risk = 5                                                                     	
-		if(abs(self.CellIdChangeCount[0]-self.CellIdChangeCount[1])>=1): self.CellIdChangeCount_Risk = 0                        
-		if(abs(self.Jam[0]-self.Jam[1])):                                self.Jam_Risk = 5                                                                     
-		if(abs(self.SleepCont[0]-self.SleepCont[1])):                    self.SleepCont_Risk = 5                                                   
-
-
-		movement = gpxpy.geo.haversine_distance(self.Lat[1], self.Lon[1], self.Lat[0], self.Lon[0])   
-		#print movement                        
-		if(movement):
-			self.lat_Risk =  ( abs(movement-DeviceSafeMovement)*5 )/max(DeviceSafeMovement,movement)
-			self.lon_Risk =  self.lat_Risk
-
-
-
-
-		RXTimeHistory = (np.delete(np.array(self.TIME_ready_RX), [0])).reshape(len(np.array(self.TIME_ready_RX))-1, 1) 
-		RXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(RXTimeHistory , np.delete(self.RX_ready,[0])) 
-		self.RX_prediction.append(RXModel.predict(self.TIME_ready_RX[0]))
-		RX_Delta = (abs((self.RX_ready[0] - self.RX_prediction[0][0])/(self.RX_ready[0])))*100
-		self.RX_Risk = RX_Delta/25
-
-
-	
-		TXTimeHistory = (np.delete(np.array(self.TIME_ready_TX), [0])).reshape(len(np.array(self.TIME_ready_TX))-1, 1) 
-		TXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(TXTimeHistory , np.delete(self.TX_ready,[0])) 
-		self.TX_prediction.append(TXModel.predict(self.TIME_ready_TX[0]))
-		TX_Delta = (abs((self.TX_ready[0] - self.TX_prediction[0][0])/(self.TX_ready[0])))*100
-		self.TX_Risk = TX_Delta/25
-
-
-
-
-		print 'RSRQ_Risk:              %s' % (self.RSRQ_Risk)
-		print 'IMEI_Risk:              %s' % (self.IMEI_Risk)
-		print 'IMSI_Risk:              %s' % (self.IMSI_Risk)
-		print 'lat_Risk:               %s' % (self.lat_Risk)
-		print 'lon_Risk:               %s' % (self.lon_Risk)
-		print 'RX_Risk:                %s' % (self.RX_Risk)
-		print 'TX_Risk:                %s' % (self.TX_Risk)
-		print 'Wakeup_Risk:            %s' % (self.Wakeup_Risk)
-		print 'WDT_Risk:               %s' % (self.WDT_Risk)
-		print 'BatVol_Risk:            %s' % (self.BatVol_Risk)
-		print 'BatChipTemp_Risk:       %s' % (self.BatChipTemp_Risk)
-		print 'BatAmp_Risk:            %s' % (self.BatAmp_Risk)
-		print 'BatRemCap_Risk:         %s' % (self.BatRemCap_Risk)
-		print 'BatRemPer_Risk:         %s' % (self.BatRemPer_Risk)
-		print 'CellIdChangeCount_Risk: %s' % (self.CellIdChangeCount_Risk)
-		print 'Jam_Risk:               %s' % (self.Jam_Risk)
-		print 'SleepCont_Risk:         %s' % (self.SleepCont_Risk)
-		print 'CoreTemp_Risk:          %s' % (self.CoreTemp_Risk)
-		print 'EnvTemp_Risk:           %s' % (self.EnvTemp_Risk)
-		print 'HeapStatus_Risk:        %s' % (self.HeapStatus_Risk)
+		#print 'RSRQ_Risk:              %s' % (self.RSRQ_Risk)
+		#print 'IMEI_Risk:              %s' % (self.IMEI_Risk)
+		#print 'IMSI_Risk:              %s' % (self.IMSI_Risk)
+		#print 'lat_Risk:               %s' % (self.lat_Risk)
+		#print 'lon_Risk:               %s' % (self.lon_Risk)
+		#print 'RX_Risk:                %s' % (self.RX_Risk)
+		#print 'TX_Risk:                %s' % (self.TX_Risk)
+		#print 'Wakeup_Risk:            %s' % (self.Wakeup_Risk)
+		#print 'WDT_Risk:               %s' % (self.WDT_Risk)
+		#print 'BatVol_Risk:            %s' % (self.BatVol_Risk)
+		#print 'BatChipTemp_Risk:       %s' % (self.BatChipTemp_Risk)
+		#print 'BatAmp_Risk:            %s' % (self.BatAmp_Risk)
+		#print 'BatRemCap_Risk:         %s' % (self.BatRemCap_Risk)
+		#print 'BatRemPer_Risk:         %s' % (self.BatRemPer_Risk)
+		#print 'CellIdChangeCount_Risk: %s' % (self.CellIdChangeCount_Risk)
+		#print 'Jam_Risk:               %s' % (self.Jam_Risk)
+		#print 'SleepCont_Risk:         %s' % (self.SleepCont_Risk)
+		#print 'CoreTemp_Risk:          %s' % (self.CoreTemp_Risk)
+		#print 'EnvTemp_Risk:           %s' % (self.EnvTemp_Risk)
+		#print 'HeapStatus_Risk:        %s' % (self.HeapStatus_Risk)
 
 
 
@@ -364,6 +343,7 @@ class C030Class():
 
 
 	def TotalRiskAnalysis(self):
+		noise = "%.3f" %(random.uniform(0.100, 0.199))
 		self.total_Risk = max(self.RSRQ_Risk*            self.RSRQ_Weight,
 							self.IMEI_Risk*              self.IMEI_Weight,
 							self.IMSI_Risk*              self.IMSI_Weight,
@@ -383,8 +363,8 @@ class C030Class():
 							self.SleepCont_Risk*         self.SleepCont_Weight,
 							self.CoreTemp_Risk*          self.CoreTemp_Weight,
 							self.EnvTemp_Risk*           self.EnvTemp_Weight,
-							self.HeapStatus_Risk*        self.HeapStatus_Weight)
-		print 'total_Risk:             %s\n\n\n'   % self.total_Risk
+							self.HeapStatus_Risk*        self.HeapStatus_Weight)+float(noise)
+		#print 'total_Risk:             %s\n\n\n'   % self.total_Risk
 
 
 

@@ -6,14 +6,13 @@ from Odin import *
 #--------------------------------------------------------------------------
 #                          LSS Configuration
 #--------------------------------------------------------------------------
-DeviceReportingIntervals = 120 
 DeviceSafeMovement = 500
 debuging = False
 gDevice  = None
-gDeviceID = ['8','9']
-gDeviceType = ['c030','odin']
+gDeviceID = ['12']
+gDeviceType = ['c030']
 #dict = {}
-dict = {'8': 0, '9': 0} #demo
+dict = {'12':0} #demo
 
 
 #--------------------------------------------------------------------------
@@ -39,8 +38,6 @@ def elapsedTime():
 
 
 def postDB(rawDataId , riskScore):
-	#print (rawDataId)
-	#print (riskScore)
 	try:
 		response  = requests.post("http://151.9.34.99/webservice/svmhandler.php", data={'RawDataId': rawDataId, 'RiskScore': riskScore})
 		if (response.text == "RC 000"):
@@ -54,8 +51,6 @@ def postDB(rawDataId , riskScore):
 
 
 def postStatus(deviceID , status):
-	#print (deviceID)
-	#print (status)
 	try:
 		response  = requests.post("http://151.9.34.99/webservice/svmhandler.php?Action=status", data={'DeviceId': deviceID, 'DeviceStatus': status})
 		if (response.text == "RC 000"):
@@ -74,17 +69,11 @@ def postStatus(deviceID , status):
 
 
 
-
-
-
-
-
-
 def securityAgent():
 	global gDeviceID, gDeviceType, gDevice
 	for i in range(len(gDeviceID)):
 		try:
-			print "\nID:%s Type:%s" %(gDeviceID[i],gDeviceType[i])
+			#print "\nID:%s Type:%s" %(gDeviceID[i],gDeviceType[i])
 			if(gDeviceType[i] == "c027"):  gDevice = C027Class(gDeviceID[i])
 			elif(gDeviceType[i] == "c030"):gDevice = C030Class(gDeviceID[i])
 			elif(gDeviceType[i] == "odin"):gDevice = OdinClass(gDeviceID[i])
@@ -100,26 +89,27 @@ def securityAgent():
 			if(gDevice.pDataBase == 0):
 				print "ERROR! pDataBase"
 				break
-			#Device.deviceDebug(debuging)
+			#gDevice.deviceDebug(debuging)
 			elapsed = elapsedTime()
-			#if(elapsed >= DeviceReportingIntervals):
-			if(elapsed <= DeviceReportingIntervals): ##just for test
+			if (elapsed is None):print("elapsed time ERROR !!!")
+
+			if(float(elapsed)>=150):
 			##--------------------------------------------------------------------------------------------------------
 			##                            DEVICE_OFFLINE
 			##--------------------------------------------------------------------------------------------------------
-
 				print " R:(%s) ID:(%s %s) T:(%s) (OFFLINE)"  %(gDevice.pDataBase, gDeviceID[i], gDeviceType[i], elapsed)
-				postStatus(gDeviceID[i], 0) # DB OFFline
+				postStatus(gDeviceID[i], "0") # DB OFFline
 				postDB(gDevice.pDataBase, 4.99) # DB DeviceTotalRisk
 			else:
 			##---------------------------------------------------------------------------------------------------------
 			##                            DEVICE_ONLINE
 			##---------------------------------------------------------------------------------------------------------
-				postStatus(gDeviceID[i], 1) # DB ONline
+				postStatus(gDeviceID[i], "1") # DB ONline
 				if(isNewReport(gDeviceID[i])):
 					gDevice.RiskAnalysis()
 					gDevice.TotalRiskAnalysis()
 					postDB(gDevice.pDataBase, gDevice.total_Risk)
+					print " R:(%s) ID:(%s %s) T:(%s) (ONLINE) NewTotalRiskScore:(%s)"  %(gDevice.pDataBase, gDeviceID[i], gDeviceType[i], elapsed, gDevice.total_Risk)
 				else:
 					print " R:(%s) ID:(%s %s) T:(%s) (ONLINE)"  %(gDevice.pDataBase, gDeviceID[i], gDeviceType[i], elapsed)
 
@@ -129,7 +119,7 @@ def securityAgent():
 		finally:
 			if(gDevice):
 				gDevice.reset()
-			time.sleep(0.1)
+			time.sleep(1)
 		#try
 	#for
 #agent
@@ -160,7 +150,6 @@ def deviceListAgent():
 		print("deviceList API Failed :((\n\n")
 	#if-else
 #deviceListAgent
-
 
 
 

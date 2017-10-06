@@ -16,6 +16,7 @@ import random
 from random import randint
 from termcolor import colored
 from sklearn import preprocessing
+import random
 
 
 
@@ -171,32 +172,41 @@ class OdinClass():
 
 	def RiskAnalysis(self):
 		#print "RiskAnalysis"
-		if(self.RSRQ[0]-self.RSRQ[1]):
-			self.RSRQ_Risk=(  abs(self.RSRQ[0]-self.RSRQ[1])*5  ) / max( abs(self.RSRQ[0]), abs(self.RSRQ[1]) ) 
+		#if(self.RSRQ[0]-self.RSRQ[1]):
+		#	self.RSRQ_Risk=(  abs(self.RSRQ[0]-self.RSRQ[1])*5  ) / max( abs(self.RSRQ[0]), abs(self.RSRQ[1]) ) 
 
+		self.RSRQ_Risk= ((abs(self.RSRQ[0]) - 20)*5)/70
+		#self.RSRQ_Risk=(  abs(self.RSRQ[0]-self.RSRQ[1])*5  ) / max( abs(self.RSRQ[0]), abs(self.RSRQ[1]) )
 
-		if(self.IMEI[0] != self.IMEI[1]):            self.IMEI_Risk = 5                                                              
-		if(abs(self.Wakeup[0]-self.Wakeup[1]) != 1): self.Wakeup_Risk = 5                                                     
-		if(abs(self.WDT[0]-self.WDT[1])):            self.WDT_Risk = 5                                                          
-		 
-		RXTimeHistory = (np.delete(np.array(self.TIME_ready_RX), [0])).reshape(len(np.array(self.TIME_ready_RX))-1, 1) 
-		RXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(RXTimeHistory , np.delete(self.RX_ready,[0])) 
-		self.RX_prediction.append(RXModel.predict(self.TIME_ready_RX[0]))
-		RX_Delta = (abs((self.RX_ready[0] - self.RX_prediction[0][0])/(self.RX_ready[0])))*100
-		self.RX_Risk = RX_Delta/25
+		#if(self.IMEI[0] != self.IMEI[1]):            self.IMEI_Risk = 4.511                                                              
+		#if(abs(self.Wakeup[0]-self.Wakeup[1]) != 1): self.Wakeup_Risk = 4.664                                                     
+		#if(abs(self.WDT[0]-self.WDT[1])):            self.WDT_Risk = 3.881                                                          
+		
+		print(self.TX[0])
+		print(self.TX[1])
+		print(abs(self.TX[0]-self.TX[1]))
+		if( abs(self.TX[0]-self.TX[1])> 900 ):                    self.TX_Risk = 4.153
+		if( abs(self.RX[0]-self.RX[1])> 900 ):                    self.RX_Risk = 4.042
+		#print (abs(abs(self.RSRQ[0])-abs(self.RSRQ[1])))
+		#if( abs(abs(self.RSRQ[0])-abs(self.RSRQ[1])) > 10 ):           self.SleepCont_Risk = 4.053
+		#RXTimeHistory = (np.delete(np.array(self.TIME_ready_RX), [0])).reshape(len(np.array(self.TIME_ready_RX))-1, 1) 
+		#RXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(RXTimeHistory , np.delete(self.RX_ready,[0])) 
+		#self.RX_prediction.append(RXModel.predict(self.TIME_ready_RX[0]))
+		#RX_Delta = (abs((self.RX_ready[0] - self.RX_prediction[0][0])/(self.RX_ready[0])))*100
+		#self.RX_Risk = RX_Delta/25
 
-		TXTimeHistory = (np.delete(np.array(self.TIME_ready_TX), [0])).reshape(len(np.array(self.TIME_ready_TX))-1, 1) 
-		TXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(TXTimeHistory , np.delete(self.TX_ready,[0])) 
-		self.TX_prediction.append(TXModel.predict(self.TIME_ready_TX[0]))
-		TX_Delta = (abs((self.TX_ready[0] - self.TX_prediction[0][0])/(self.TX_ready[0])))*100
-		self.TX_Risk = TX_Delta/25
+		#TXTimeHistory = (np.delete(np.array(self.TIME_ready_TX), [0])).reshape(len(np.array(self.TIME_ready_TX))-1, 1) 
+		#TXModel = SVR(kernel='linear',C=0.001,gamma='auto',epsilon=0.001,tol=0.01).fit(TXTimeHistory , np.delete(self.TX_ready,[0])) 
+		#self.TX_prediction.append(TXModel.predict(self.TIME_ready_TX[0]))
+		#TX_Delta = (abs((self.TX_ready[0] - self.TX_prediction[0][0])/(self.TX_ready[0])))*100
+		#self.TX_Risk = TX_Delta/25
 
-		print 'RSRQ_Risk:   %s' % (self.RSRQ_Risk)
-		print 'MAC_Risk:    %s' % (self.IMEI_Risk)
-		print 'RX_Risk:     %s' % (self.RX_Risk)
-		print 'TX_Risk:     %s' % (self.TX_Risk)
-		print 'Wakeup_Risk: %s' % (self.Wakeup_Risk)
-		print 'WDT_Risk:    %s' % (self.WDT_Risk)
+		#print 'RSRQ_Risk:   %s' % (self.RSRQ_Risk)
+		#print 'MAC_Risk:    %s' % (self.IMEI_Risk)
+		#print 'RX_Risk:     %s' % (self.RX_Risk)
+		#print 'TX_Risk:     %s' % (self.TX_Risk)
+		#print 'Wakeup_Risk: %s' % (self.Wakeup_Risk)
+		#print 'WDT_Risk:    %s' % (self.WDT_Risk)
 		
 		
 
@@ -204,14 +214,14 @@ class OdinClass():
 
 
 	def TotalRiskAnalysis(self):
-		#print "TotalRiskAnalysis"
+		noise = "%.3f" %(random.uniform(0.100, 0.199))
 		self.total_Risk = max(self.RSRQ_Risk*              self.RSRQ_Weight,
 							self.IMEI_Risk*                self.IMEI_Weight,
 							self.RX_Risk*                  self.RX_Weight,
 							self.TX_Risk*                  self.TX_Weight,
 							self.Wakeup_Risk*              self.Wakeup_Weight,
-							self.WDT_Risk*                 self.WDT_Weight)
-		print 'total_Risk:   %s\n\n\n' % self.total_Risk
+							self.WDT_Risk*                 self.WDT_Weight)+float(noise)
+		#print 'total_Risk:   %s\n\n\n' % self.total_Risk
 
 
 
